@@ -1,0 +1,412 @@
+@import 'ui';
+
+ui-app > ui-container {
+  padding-top: 60px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  div {
+    font-size: 30px;
+    margin-bottom: 30px;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+}
+
+ui-layout-website > ui-layout-website-content {
+  display: flex;
+}
+
+/*
+$bg-color-1: rgb(2, 48, 87);
+$color-1: rgb(98, 144, 183);
+
+$bg-color-2: rgb(3, 75, 138);
+$color-2: rgb(99, 171, 234);
+
+$bg-color-3: rgb(3, 102, 189);
+$color-3: rgb(0, 6, 93);
+
+$bg-color-4: rgb(2, 129, 240);
+$color-4: rgb(0, 33, 144);
+
+$bg-color-5: rgb(40, 154, 254);
+$color-5: rgb(0, 58, 158);
+*/
+$bg-color-1: #0591bf;
+$color-1: #e3f8ff;
+$bg-color-2: #05a7db;
+$color-2: #e3f8ff;
+$bg-color-3: #05bcf7;
+$color-3: #033241;
+$bg-color-4: #1dc5fb;
+$color-4: #033241;
+$bg-color-5: #39cdfc;
+$color-5: #033241;
+$bg-color-6: #54d4fd;
+$color-6: #033241;
+$bg-color-7: #70dbfe;
+$color-7: #033241;
+$bg-color-8: #8ce2fe;
+$color-8: #033241;
+$bg-color-9: #a7eaff;
+$color-9: #033241;
+$bg-color-10: #e3f8ff;
+$color-10: #033241;
+
+::-webkit-scrollbar
+{
+  width: 6px;  /* for vertical scrollbars */
+  height: 6px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.wrapper {
+  margin: 0 auto;
+  padding: 40px;
+  max-width: 800px;
+}
+
+.table {
+  margin: 0 0 40px 0;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: table;
+}
+
+@media screen and (max-width: 580px) {
+  .table {
+    display: block;
+  }
+}
+
+.row {
+  display: table-row;
+  background: #f6f6f6;
+}
+.row:nth-of-type(odd) {
+  background: #e9e9e9;
+}
+.row.header {
+  font-weight: 900;
+  color: #ffffff;
+  background: #ea6153;
+}
+.row.green {
+  background: #27ae60;
+}
+.row.blue {
+  background: #2980b9;
+}
+@media screen and (max-width: 580px) {
+  .row {
+    padding: 8px 0;
+    display: block;
+  }
+}
+
+.cell {
+  padding: 6px 12px;
+  display: table-cell;
+}
+@media screen and (max-width: 580px) {
+  .cell {
+    padding: 2px 12px;
+    display: block;
+  }
+}
+
+
+/*-------------------------*/
+
+.k-icon {
+    min-width: 16px;
+}
+
+div.k-treeview {
+    border-width: 0;
+    background: 0;
+    overflow: auto;
+    white-space: nowrap
+}
+
+.k-treeview .k-item {
+    display: block;
+    border-width: 0;
+    margin: 2px;
+    padding: 0 0 0 16px
+}
+
+.k-treeview>.k-group,.k-treeview .k-item>.k-group,.k-treeview .k-content {
+    margin: 0;
+    padding: 0;
+    background: 0;
+    list-style-type: none;
+    position: relative
+}
+
+.k-treeview .k-icon,.k-treeview .k-image,.k-treeview .k-sprite,.k-treeview .k-checkbox,.k-treeview .k-in {
+    display: inline-block;
+    vertical-align: top
+}
+
+.k-treeview .k-plus,.k-treeview .k-minus,.k-treeview .k-plus-disabled,.k-treeview .k-minus-disabled {
+    /*margin-top: 3px;*/
+    margin-left: -16px;
+    cursor: pointer;
+}
+
+.k-treeview .k-plus-disabled,.k-treeview .k-minus-disabled {
+    cursor: default
+}
+
+.k-treeview .k-sprite,.k-treeview .k-image {
+    margin-right: 3px
+}
+
+.k-treeview .k-in {
+    margin: 1px 0 1px 2px;
+    padding: 2px 4px 2px 3px;
+    line-height: 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.k-treeview span.k-in {
+    cursor: default
+}
+
+.k-treeview .k-in.k-state-hover,.k-treeview .k-in.k-state-selected,.k-treeview .k-in.k-state-focused {
+    border-style: solid;
+    border-width: 1px;
+    padding: 1px 3px 1px 2px
+}
+
+.k-treeview .k-drop-hint {
+    position: absolute;
+    z-index: 10000;
+    visibility: hidden;
+    width: 80px;
+    height: 5px;
+    margin-top: -3px;
+    background-color: transparent;
+    background-repeat: no-repeat
+}
+
+/* --------------------------------------------- */
+
+.k-icon:hover,.k-state-hover .k-icon,.k-state-selected .k-icon,.k-state-focused .k-icon,.k-column-menu .k-state-hover .k-sprite,.k-column-menu .k-state-active .k-sprite {
+    opacity: 1;
+}
+
+.k-icon,.k-state-disabled .k-icon,.k-column-menu .k-sprite {
+    opacity: 1
+}
+
+.k-icon,.k-tool-icon,.k-grouping-dropclue,.k-drop-hint,.k-column-menu .k-sprite {
+    /*background-image: url('Bootstrap/sprite.png');*/
+    border-color: transparent;
+    /*padding-right: 4px;*/
+}
+
+.k-state-selected {
+    color: #fff;
+    background-color: $color-10;
+    border-color: $color-10;
+    border-radius: 4px;
+}
+
+/* ---------------------------------------------- */
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.navbar {
+    height: 52px;
+    color: $color-1;
+    background-color: $bg-color-1;
+}
+
+.fullview {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.footer {
+    height: 40px;
+    color: $color-1;
+    background-color: $bg-color-1;
+}
+
+.sidebar {
+    width: 370px;
+    padding: 16px;
+    overflow: auto;
+    background-color: $bg-color-2;
+    color: $color-2;
+    border-right: 1px solid $bg-color-1;
+}
+
+.body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    /*
+    position: relative;
+    padding-top: 52px;
+    padding-left: 370px;
+    */
+}
+
+.body-header {
+    flex: 0 0 auto;
+    display: flex;
+    color: $color-6;
+    border-bottom: 1px solid $bg-color-1;
+}
+
+.body-header-image {
+    flex: 0 0 auto;
+    background-color: $bg-color-9;
+    color: $color-9;
+    width: 280px;
+    border: 8px solid $bg-color-9;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+}
+
+.body-header-content {
+    flex: 0 0 auto;
+    background-color: $bg-color-10;
+    border-left: 1px solid $bg-color-1;
+    color: $color-10;
+    padding: 0 1em 1em 1em;
+}
+
+.body-header-extra {
+    flex: 1 1 auto;
+    background-color: $bg-color-10;
+    color: $color-10;
+}
+
+.body-content {
+    display: flex;
+    flex: 1 1 auto;
+    background-color: #FFFFFF;
+    flex-direction: row;
+    align-items: stretch;    
+}
+
+.body-content-sidebar {
+    flex: 0 0 auto;
+    display: flex;
+    background-color: $bg-color-9;
+    border-right: 1px solid $bg-color-1;
+    color: $color-9;
+    width: 280px;
+    padding: 8px;
+    overflow: auto;
+}
+
+.body-content-content {
+    flex: 1 1 auto;
+    background-color: $bg-color-10;
+    color: $color-10;
+    padding: 8px;
+    overflow: auto;
+}
+
+abbr[title] {
+    cursor: help;
+    border-bottom: 1px dotted $color-10;
+}
+
+div.body-path {
+    display: flex;
+    flex: 0 0 auto;
+    background-color: $bg-color-3;
+    color: $color-3;
+    border-bottom: 1px solid $bg-color-1;    
+}
+
+.body-path div {
+    display: inline-block;    
+}
+
+.path-item {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    color: $color-10;
+}
+
+.clickable {
+    cursor: pointer;
+    color: $color-1;
+}
+
+.clickable:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb {
+    flex: 1 1 auto;
+    padding: 0.5em;
+}
+
+.body-path div.tabs {
+    flex: 0 1 auto;
+    display: flex;
+    align-items: flex-end;
+}
+
+.body-path div.tab {
+    margin-bottom: -1px;
+    margin-right: 0.25em;
+    display: block;
+    padding: 0.35em 0.75em;
+    border-top-left-radius: 0.25em;    
+    border-top-right-radius: 0.25em;    
+}
+
+.body-path div.tab.active {
+    border-left: 1px solid $bg-color-1;
+    border-top: 1px solid $bg-color-1;
+    border-right: 1px solid $bg-color-1;
+    background-color: $bg-color-10;
+    color: $color-10;
+}
+
+.body-path div.tab.clickable {
+    border-bottom: 1px solid $bg-color-1;
+    background-color: $bg-color-3;
+    color: $color-5;
+}
+
+.body-path div.tab.clickable:hover {
+    background-color: $bg-color-2;
+    text-decoration: none;
+}
