@@ -9,11 +9,11 @@ import Tree.View
 import Table
 
 
-view : String -> Content -> Html Msg
-view origin content =
+view : Content -> Html Msg
+view content =
     case content of
         FoldersContent folders ->
-            contentFolders origin folders
+            contentFolders folders
 
         UsersContent users ->
             contentUsers users
@@ -25,13 +25,13 @@ view origin content =
             contentEmpty
 
 
-contentFolders : String -> Folders -> Html Msg
-contentFolders origin folders =
+contentFolders : Folders -> Html Msg
+contentFolders folders =
     div [ class "body-content" ]
         [ div [ class "body-content-sidebar" ]
             [ Html.map
                 TreeMsg
-                (Tree.View.view origin folders.tree)
+                (Tree.View.view folders.tree)
             ]
         , div [ class "body-content-content" ]
             [ contentFiles folders ]

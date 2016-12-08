@@ -7,23 +7,23 @@ import Tree.Messages exposing (..)
 import Tree.Models exposing (..)
 
 
-view : String -> Tree -> Html Msg
-view origin tree =
+view : Tree -> Html Msg
+view tree =
     div []
-        [ viewTree origin tree
+        [ viewTree tree
         ]
 
 
-viewTree : String -> Tree -> Html Msg
-viewTree origin tree =
+viewTree : Tree -> Html Msg
+viewTree tree =
     div [ class "k-treeview" ]
         [ ul [ class "k-group", attribute "role" "group", attribute "style" "display: block;" ]
-            [ viewRoot origin tree ]
+            [ viewRoot tree ]
         ]
 
 
-viewRoot : String -> Tree -> Html Msg
-viewRoot origin tree =
+viewRoot : Tree -> Html Msg
+viewRoot tree =
     let
         childStyle =
             if tree.childrenState == Expanded then
@@ -71,7 +71,7 @@ viewRoot origin tree =
                 [ span
                     [ class iconClass
                     , attribute "role" "presentation"
-                    , onClick (ToggleNode origin tree.id)
+                    , onClick (ToggleNode tree.id)
                     ]
                     [ i
                         [ class faClass
@@ -85,12 +85,12 @@ viewRoot origin tree =
                     [ text tree.name ]
                 ]
             , ul [ class "k-group", attribute "role" "group", attribute "style" childStyle ]
-                (List.map (viewNode origin) childNodes)
+                (List.map viewNode childNodes)
             ]
 
 
-viewNode : String -> Node -> Html Msg
-viewNode origin node =
+viewNode : Node -> Html Msg
+viewNode node =
     let
         childStyle =
             if node.childrenState == Expanded then
@@ -138,7 +138,7 @@ viewNode origin node =
                 [ span
                     [ class iconClass
                     , attribute "role" "presentation"
-                    , onClick (ToggleNode origin node.id)
+                    , onClick (ToggleNode node.id)
                     ]
                     [ i
                         [ class faClass
@@ -152,5 +152,5 @@ viewNode origin node =
                     [ text node.name ]
                 ]
             , ul [ class "k-group", attribute "role" "group", attribute "style" childStyle ]
-                (List.map (viewNode origin) childNodes)
+                (List.map viewNode childNodes)
             ]

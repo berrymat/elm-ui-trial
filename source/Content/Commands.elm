@@ -8,27 +8,28 @@ import Header.Models exposing (..)
 import Tree.Models exposing (..)
 import Table
 import Debug
+import Helpers.Helpers exposing (apiUrl, fetcher)
 
 
-fetchContent : String -> TabType -> NodeId -> Cmd Msg
-fetchContent origin tabType nodeId =
+fetchContent : TabType -> NodeId -> Cmd Msg
+fetchContent tabType nodeId =
     if nodeId /= "" then
         case tabType of
             FoldersType ->
                 let
                     folderCmd =
-                        fetchFolders origin nodeId
+                        fetchFolders nodeId
 
                     filesCmd =
-                        fetchFiles origin nodeId
+                        fetchFiles nodeId
                 in
                     Cmd.batch [ folderCmd, filesCmd ]
 
             UsersType ->
-                fetchUsers origin nodeId
+                fetchUsers nodeId
 
             CasesType ->
-                fetchCases origin nodeId
+                fetchCases nodeId
 
             EmptyTab ->
                 Cmd.none
@@ -36,53 +37,44 @@ fetchContent origin tabType nodeId =
         Cmd.none
 
 
-fetchFolders : String -> NodeId -> Cmd Msg
-fetchFolders origin nodeId =
-    Http.get (foldersUrl origin nodeId) foldersDecoder
-        |> Http.send (OnFetchFolders nodeId)
+fetchFolders : NodeId -> Cmd Msg
+fetchFolders nodeId =
+    fetcher (foldersUrl nodeId) foldersDecoder (OnFetchFolders nodeId)
 
 
-fetchFiles : String -> NodeId -> Cmd Msg
-fetchFiles origin nodeId =
-    Http.get (filesUrl origin nodeId) filesDecoder
-        |> Http.send (OnFetchFiles nodeId)
+fetchFiles : NodeId -> Cmd Msg
+fetchFiles nodeId =
+    fetcher (filesUrl nodeId) filesDecoder (OnFetchFiles nodeId)
 
 
-fetchUsers : String -> NodeId -> Cmd Msg
-fetchUsers origin nodeId =
-    Http.get (usersUrl origin nodeId) usersDecoder
-        |> Http.send (OnFetchUsers nodeId)
+fetchUsers : NodeId -> Cmd Msg
+fetchUsers nodeId =
+    fetcher (usersUrl nodeId) usersDecoder (OnFetchUsers nodeId)
 
 
-fetchCases : String -> NodeId -> Cmd Msg
-fetchCases origin nodeId =
-    Http.get (casesUrl origin nodeId) casesDecoder
-        |> Http.send (OnFetchCases nodeId)
+fetchCases : NodeId -> Cmd Msg
+fetchCases nodeId =
+    fetcher (casesUrl nodeId) casesDecoder (OnFetchCases nodeId)
 
 
-apiUrl : String -> String
-apiUrl origin =
-    origin ++ "api/"
+foldersUrl : NodeId -> String
+foldersUrl nodeId =
+    apiUrl ++ "Folders/" ++ nodeId
 
 
-foldersUrl : String -> NodeId -> String
-foldersUrl origin nodeId =
-    (apiUrl origin) ++ "Folders/" ++ nodeId
+filesUrl : NodeId -> String
+filesUrl nodeId =
+    apiUrl ++ "Files/" ++ nodeId
 
 
-filesUrl : String -> NodeId -> String
-filesUrl origin nodeId =
-    (apiUrl origin) ++ "Files/" ++ nodeId
+usersUrl : NodeId -> String
+usersUrl nodeId =
+    apiUrl ++ "Users/" ++ nodeId
 
 
-usersUrl : String -> NodeId -> String
-usersUrl origin nodeId =
-    (apiUrl origin) ++ "Users/" ++ nodeId
-
-
-casesUrl : String -> NodeId -> String
-casesUrl origin nodeId =
-    (apiUrl origin) ++ "Cases/" ++ nodeId
+casesUrl : NodeId -> String
+casesUrl nodeId =
+    apiUrl ++ "Cases/" ++ nodeId
 
 
 

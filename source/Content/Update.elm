@@ -9,8 +9,8 @@ import Tree.Update
 import Debug exposing (..)
 
 
-update : String -> Msg -> Content -> ( Content, Cmd Msg )
-update origin message content =
+update : Msg -> Content -> ( Content, Cmd Msg )
+update message content =
     case message of
         OnFetchFolders nodeId (Ok folders) ->
             ( FoldersContent folders, Cmd.none )
@@ -54,7 +54,7 @@ update origin message content =
                         ( updatedTree, cmdTree, path ) =
                             Tree.Update.update subMsg folders.tree
                     in
-                        updatePathFromTree origin content folders updatedTree cmdTree path
+                        updatePathFromTree content folders updatedTree cmdTree path
 
                 UsersContent _ ->
                     ( content, Cmd.none )
@@ -94,8 +94,8 @@ update origin message content =
                     ( content, Cmd.none )
 
 
-updatePathFromTree : String -> Content -> Folders -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Content, Cmd Msg )
-updatePathFromTree origin content folders updatedTree cmdTree path =
+updatePathFromTree : Content -> Folders -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Content, Cmd Msg )
+updatePathFromTree content folders updatedTree cmdTree path =
     let
         maybeSelected =
             log "path" (List.head path)
@@ -110,7 +110,7 @@ updatePathFromTree origin content folders updatedTree cmdTree path =
 
         cmdFiles =
             if folderId /= folders.folderId then
-                fetchFiles origin folderId
+                log "fetchFiles" (fetchFiles folderId)
             else
                 Cmd.none
 

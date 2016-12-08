@@ -7,26 +7,28 @@ import Header.Messages exposing (..)
 import Header.Models exposing (..)
 import Tree.Models exposing (NodeType(..), NodeId)
 import Ui.DropdownMenu
+import Helpers.Helpers exposing (apiUrl, fetcher)
+import HttpBuilder exposing (..)
 
 
-fetchHeader : String -> NodeType -> NodeId -> Cmd Msg
-fetchHeader origin nodeType nodeId =
+fetchHeader : NodeType -> NodeId -> Cmd Msg
+fetchHeader nodeType nodeId =
     if nodeId /= "" then
         case nodeType of
             RootType ->
-                fetchRoot origin nodeId
+                fetchRoot nodeId
 
             CustomerType ->
-                fetchCustomer origin nodeId
+                fetchCustomer nodeId
 
             ClientType ->
-                fetchClient origin nodeId
+                fetchClient nodeId
 
             SiteType ->
-                fetchSite origin nodeId
+                fetchSite nodeId
 
             StaffType ->
-                fetchStaff origin nodeId
+                fetchStaff nodeId
 
             FolderType ->
                 Cmd.none
@@ -34,64 +36,54 @@ fetchHeader origin nodeType nodeId =
         Cmd.none
 
 
-fetchRoot : String -> NodeId -> Cmd Msg
-fetchRoot origin nodeId =
-    Http.get (rootUrl origin nodeId) rootDecoder
-        |> Http.send (OnFetchRoot nodeId)
+fetchRoot : NodeId -> Cmd Msg
+fetchRoot nodeId =
+    fetcher (rootUrl nodeId) rootDecoder (OnFetchRoot nodeId)
 
 
-fetchCustomer : String -> NodeId -> Cmd Msg
-fetchCustomer origin nodeId =
-    Http.get (customerUrl origin nodeId) customerDecoder
-        |> Http.send (OnFetchCustomer nodeId)
+fetchCustomer : NodeId -> Cmd Msg
+fetchCustomer nodeId =
+    fetcher (customerUrl nodeId) customerDecoder (OnFetchCustomer nodeId)
 
 
-fetchClient : String -> NodeId -> Cmd Msg
-fetchClient origin nodeId =
-    Http.get (clientUrl origin nodeId) clientDecoder
-        |> Http.send (OnFetchClient nodeId)
+fetchClient : NodeId -> Cmd Msg
+fetchClient nodeId =
+    fetcher (clientUrl nodeId) clientDecoder (OnFetchClient nodeId)
 
 
-fetchSite : String -> NodeId -> Cmd Msg
-fetchSite origin nodeId =
-    Http.get (siteUrl origin nodeId) siteDecoder
-        |> Http.send (OnFetchSite nodeId)
+fetchSite : NodeId -> Cmd Msg
+fetchSite nodeId =
+    fetcher (siteUrl nodeId) siteDecoder (OnFetchSite nodeId)
 
 
-fetchStaff : String -> NodeId -> Cmd Msg
-fetchStaff origin nodeId =
-    Http.get (staffUrl origin nodeId) staffDecoder
-        |> Http.send (OnFetchStaff nodeId)
+fetchStaff : NodeId -> Cmd Msg
+fetchStaff nodeId =
+    fetcher (staffUrl nodeId) staffDecoder (OnFetchStaff nodeId)
 
 
-apiUrl : String -> String
-apiUrl origin =
-    origin ++ "api/"
+rootUrl : NodeId -> String
+rootUrl nodeId =
+    apiUrl ++ "Roots/" ++ nodeId
 
 
-rootUrl : String -> NodeId -> String
-rootUrl origin nodeId =
-    (apiUrl origin) ++ "Roots/" ++ nodeId
+customerUrl : NodeId -> String
+customerUrl nodeId =
+    apiUrl ++ "Customers/" ++ nodeId
 
 
-customerUrl : String -> NodeId -> String
-customerUrl origin nodeId =
-    (apiUrl origin) ++ "Customers/" ++ nodeId
+clientUrl : NodeId -> String
+clientUrl nodeId =
+    apiUrl ++ "Clients/" ++ nodeId
 
 
-clientUrl : String -> NodeId -> String
-clientUrl origin nodeId =
-    (apiUrl origin) ++ "Clients/" ++ nodeId
+siteUrl : NodeId -> String
+siteUrl nodeId =
+    apiUrl ++ "Sites/" ++ nodeId
 
 
-siteUrl : String -> NodeId -> String
-siteUrl origin nodeId =
-    (apiUrl origin) ++ "Sites/" ++ nodeId
-
-
-staffUrl : String -> NodeId -> String
-staffUrl origin nodeId =
-    (apiUrl origin) ++ "Staff/" ++ nodeId
+staffUrl : NodeId -> String
+staffUrl nodeId =
+    apiUrl ++ "Staff/" ++ nodeId
 
 
 

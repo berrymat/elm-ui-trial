@@ -2,6 +2,7 @@ module Container.Update exposing (..)
 
 import Container.Messages exposing (Msg(..))
 import Container.Models exposing (..)
+import Container.Commands exposing (..)
 import Tree.Messages
 import Tree.Models exposing (..)
 import Tree.Update
@@ -13,8 +14,8 @@ import Content.Update
 import Navigation
 
 
-updatePathFromTree : String -> Container -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Container, Cmd Msg )
-updatePathFromTree origin container updatedTree cmdTree path =
+updatePathFromTree : Container -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Container, Cmd Msg )
+updatePathFromTree container updatedTree cmdTree path =
     let
         maybeSelected =
             List.head path
@@ -29,7 +30,7 @@ updatePathFromTree origin container updatedTree cmdTree path =
 
         cmdHeader =
             if headerId /= (Header.Models.headerId container.headerInfo) then
-                Header.Commands.fetchHeader origin headerType headerId
+                Header.Commands.fetchHeader headerType headerId
                     |> Cmd.map HeaderMsg
             else
                 Cmd.none
@@ -43,20 +44,29 @@ updatePathFromTree origin container updatedTree cmdTree path =
         ( { container | tree = updatedTree, path = path }, cmdBatch )
 
 
-update : String -> Msg -> Container -> ( Container, Cmd Msg )
-update origin message container =
+update : Msg -> Container -> ( Container, Cmd Msg )
+update message container =
     case message of
         ShowContainer ->
             ( container
             , Navigation.newUrl "#container/customer/path/Customer-46-Client"
             )
 
+        OnAuthenticate (Ok result) ->
+            if result.result == "OK" then
+                ( container, fetchInitialData result.nodeType result.nodeId container )
+            else
+                ( container, Cmd.none )
+
+        OnAuthenticate (Err error) ->
+            ( container, Cmd.none )
+
         SelectPath nodeId ->
             let
                 ( updatedTree, cmdTree, path ) =
                     Tree.Update.update (Tree.Messages.SelectNode nodeId) container.tree
             in
-                updatePathFromTree origin container updatedTree cmdTree path
+                updatePathFromTree container updatedTree cmdTree path
 
         SelectTab tabType ->
             let
@@ -79,7 +89,7 @@ update origin message container =
                                 |> Maybe.withDefault (Tab EmptyTab "")
 
                 cmdContent =
-                    Content.Commands.fetchContent origin tabType nodeId
+                    Content.Commands.fetchContent tabType nodeId
             in
                 ( { container | tab = updatedTab }, Cmd.map ContentMsg cmdContent )
 
@@ -88,7 +98,7 @@ update origin message container =
                 ( updatedTree, cmdTree, path ) =
                     Tree.Update.update subMsg container.tree
             in
-                updatePathFromTree origin container updatedTree cmdTree path
+                updatePathFromTree container updatedTree cmdTree path
 
         HeaderMsg subMsg ->
             let
@@ -114,7 +124,7 @@ update origin message container =
                                 |> Maybe.withDefault (Tab EmptyTab "")
 
                 cmdContent =
-                    Content.Commands.fetchContent origin updatedTab.tabType nodeId
+                    Content.Commands.fetchContent updatedTab.tabType nodeId
 
                 cmdBatch =
                     Cmd.batch
@@ -127,7 +137,7 @@ update origin message container =
         ContentMsg subMsg ->
             let
                 ( updatedContent, cmdContent ) =
-                    Content.Update.update origin subMsg container.content
+                    Content.Update.update subMsg container.content
             in
                 ( { container | content = updatedContent }, Cmd.map ContentMsg cmdContent )
 

@@ -11,13 +11,13 @@ import Header.View
 import Content.View
 
 
-view : String -> Container -> Html Msg
-view origin container =
+view : Container -> Html Msg
+view container =
     div [ class "fullview" ]
         [ div [ class "sidebar" ]
             [ Html.map
                 TreeMsg
-                (Tree.View.view origin container.tree)
+                (Tree.View.view container.tree)
             ]
         , div [ class "body" ]
             [ Html.map
@@ -29,7 +29,7 @@ view origin container =
                 ]
             , Html.map
                 ContentMsg
-                (Content.View.view origin container.content)
+                (Content.View.view container.content)
             ]
         ]
 

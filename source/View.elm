@@ -7,7 +7,7 @@ import Ui
 import Ui.Layout
 import Ui.Header
 import Messages exposing (Msg(..))
-import Models exposing (Model, baseUrl)
+import Models exposing (Model)
 import Players.Edit
 import Players.List
 import Players.Messages exposing (Msg(..))
@@ -98,7 +98,6 @@ page model =
         ContainerRoute type_ id ->
             Html.map ContainerMsg
                 (Container.View.view
-                    (baseUrl model.location)
                     model.container
                 )
 

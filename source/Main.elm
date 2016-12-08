@@ -16,7 +16,7 @@ init location =
             Routing.parseLocation location
 
         model =
-            initialModel currentRoute location
+            initialModel currentRoute
     in
         ( model, fetchData model )
 

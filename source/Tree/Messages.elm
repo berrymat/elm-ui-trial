@@ -7,6 +7,6 @@ import Tree.Models exposing (..)
 type Msg
     = OnFetchRoot (Result Http.Error TempRoot)
     | OnFetchNode NodeId (Result Http.Error TempChildren)
-    | ToggleNode String NodeId
+    | ToggleNode NodeId
     | SelectRoot
     | SelectNode NodeId

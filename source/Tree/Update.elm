@@ -57,14 +57,14 @@ select nodeId tree =
         { tree | childNodes = (ChildNodes newChildren), selected = newSelected, path = newPath }
 
 
-toggleChildNodes : String -> NodeId -> Node -> ( Node, Cmd Msg )
-toggleChildNodes origin nodeId node =
+toggleChildNodes : NodeId -> Node -> ( Node, Cmd Msg )
+toggleChildNodes nodeId node =
     let
         (ChildNodes childNodes) =
             node.childNodes
 
         results =
-            List.map (toggleNode origin nodeId) childNodes
+            List.map (toggleNode nodeId) childNodes
 
         ( newChildNodes, cmds ) =
             List.unzip results
@@ -72,8 +72,8 @@ toggleChildNodes origin nodeId node =
         ( { node | childNodes = ChildNodes newChildNodes }, Cmd.batch cmds )
 
 
-toggleNode : String -> NodeId -> Node -> ( Node, Cmd Msg )
-toggleNode origin nodeId node =
+toggleNode : NodeId -> Node -> ( Node, Cmd Msg )
+toggleNode nodeId node =
     let
         ( newNode, cmd ) =
             if nodeId == node.id then
@@ -87,7 +87,7 @@ toggleNode origin nodeId node =
                                 node.childNodes
                         in
                             if List.isEmpty childNodes then
-                                ( { node | childrenState = Expanding }, Tree.Commands.fetchNode origin node.id )
+                                ( { node | childrenState = Expanding }, Tree.Commands.fetchNode node.id )
                             else
                                 ( { node | childrenState = Expanded }, Cmd.none )
 
@@ -97,19 +97,19 @@ toggleNode origin nodeId node =
                     Expanded ->
                         ( { node | childrenState = Collapsed }, Cmd.none )
             else
-                toggleChildNodes origin nodeId node
+                toggleChildNodes nodeId node
     in
         ( newNode, cmd )
 
 
-toggle : String -> NodeId -> Tree -> ( Tree, Cmd Msg )
-toggle origin nodeId tree =
+toggle : NodeId -> Tree -> ( Tree, Cmd Msg )
+toggle nodeId tree =
     let
         (ChildNodes childNodes) =
             tree.childNodes
 
         results =
-            List.map (toggleNode origin nodeId) childNodes
+            List.map (toggleNode nodeId) childNodes
 
         ( newChildren, cmds ) =
             List.unzip results
@@ -199,10 +199,10 @@ update message tree =
         OnFetchNode nodeId (Err error) ->
             ( tree, Cmd.none, tree.path )
 
-        ToggleNode origin nodeId ->
+        ToggleNode nodeId ->
             let
                 ( newTree, cmds ) =
-                    toggle origin nodeId tree
+                    toggle nodeId tree
             in
                 ( newTree, cmds, tree.path )
 
