@@ -19,6 +19,23 @@ ui-layout-website > ui-layout-website-content {
   display: flex;
 }
 
+ui-modal {
+    ui-modal-wrapper {
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+    ui-modal-header {
+        flex: 0 0 auto;
+    }
+    ui-modal-content {
+        overflow-y: auto;
+        flex: 1 1 auto;
+    }
+    ui-modal-footer {
+        flex: 0 0 auto;
+    }
+}
 /*
 $bg-color-1: rgb(2, 48, 87);
 $color-1: rgb(98, 144, 183);

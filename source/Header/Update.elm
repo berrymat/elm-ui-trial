@@ -8,72 +8,139 @@ import Ui.Modal
 
 update : Msg -> HeaderInfo -> ( HeaderInfo, Cmd Msg )
 update message headerInfo =
-    case message of
-        OnFetchRoot headerId (Ok newHeaderInfo) ->
-            ( newHeaderInfo, Cmd.none )
+    let
+        ui =
+            headerInfo.ui
+    in
+        case message of
+            OnFetchRoot headerId (Ok newHeaderInfo) ->
+                ( newHeaderInfo, Cmd.none )
 
-        OnFetchRoot headerId (Err error) ->
-            ( headerInfo, Cmd.none )
+            OnFetchRoot headerId (Err error) ->
+                ( headerInfo, Cmd.none )
 
-        OnFetchCustomer headerId (Ok newHeaderInfo) ->
-            ( newHeaderInfo, Cmd.none )
+            OnFetchCustomer headerId (Ok newHeaderInfo) ->
+                ( newHeaderInfo, Cmd.none )
 
-        OnFetchCustomer headerId (Err error) ->
-            ( headerInfo, Cmd.none )
+            OnFetchCustomer headerId (Err error) ->
+                ( headerInfo, Cmd.none )
 
-        OnFetchClient headerId (Ok newHeaderInfo) ->
-            ( newHeaderInfo, Cmd.none )
+            OnFetchClient headerId (Ok newHeaderInfo) ->
+                ( newHeaderInfo, Cmd.none )
 
-        OnFetchClient headerId (Err error) ->
-            ( headerInfo, Cmd.none )
+            OnFetchClient headerId (Err error) ->
+                ( headerInfo, Cmd.none )
 
-        OnFetchSite headerId (Ok newHeaderInfo) ->
-            ( newHeaderInfo, Cmd.none )
+            OnFetchSite headerId (Ok newHeaderInfo) ->
+                ( newHeaderInfo, Cmd.none )
 
-        OnFetchSite headerId (Err error) ->
-            ( headerInfo, Cmd.none )
+            OnFetchSite headerId (Err error) ->
+                ( headerInfo, Cmd.none )
 
-        OnFetchStaff headerId (Ok newHeaderInfo) ->
-            ( newHeaderInfo, Cmd.none )
+            OnFetchStaff headerId (Ok newHeaderInfo) ->
+                ( newHeaderInfo, Cmd.none )
 
-        OnFetchStaff headerId (Err error) ->
-            ( headerInfo, Cmd.none )
+            OnFetchStaff headerId (Err error) ->
+                ( headerInfo, Cmd.none )
 
-        DropdownMenu act ->
-            let
-                dropdownMenu =
-                    Ui.DropdownMenu.update act headerInfo.dropdownMenu
-            in
-                ( { headerInfo | dropdownMenu = dropdownMenu }, Cmd.none )
+            ActionMenu action ->
+                let
+                    newActionMenu =
+                        Ui.DropdownMenu.update action ui.actionMenu
 
-        CloseMenu ->
-            ( { headerInfo | dropdownMenu = Ui.DropdownMenu.close headerInfo.dropdownMenu }, Cmd.none )
+                    newUi =
+                        { ui | actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
 
-        Header.Messages.Nothing ->
-            ( headerInfo, Cmd.none )
+            CloseActionMenu ->
+                let
+                    newActionMenu =
+                        Ui.DropdownMenu.close ui.actionMenu
 
-        CloseModal ->
-            ( { headerInfo
-                | modal = Ui.Modal.close headerInfo.modal
-                , dropdownMenu = Ui.DropdownMenu.close headerInfo.dropdownMenu
-              }
-            , Cmd.none
-            )
+                    newUi =
+                        { ui | actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
 
-        OpenModal ->
-            ( { headerInfo
-                | modal = Ui.Modal.open headerInfo.modal
-                , dropdownMenu = Ui.DropdownMenu.close headerInfo.dropdownMenu
-              }
-            , Cmd.none
-            )
+            NoAction ->
+                ( headerInfo, Cmd.none )
 
-        Modal act ->
-            ( { headerInfo | modal = Ui.Modal.update act headerInfo.modal }, Cmd.none )
+            CloseEditModal ->
+                let
+                    newEditModal =
+                        Ui.Modal.close ui.editModal
+
+                    newActionMenu =
+                        Ui.DropdownMenu.close ui.actionMenu
+
+                    newUi =
+                        { ui | editModal = newEditModal, actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
+
+            OpenEditModal ->
+                let
+                    newEditModal =
+                        Ui.Modal.open ui.editModal
+
+                    newActionMenu =
+                        Ui.DropdownMenu.close ui.actionMenu
+
+                    newUi =
+                        { ui | editModal = newEditModal, actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
+
+            EditModal action ->
+                let
+                    newEditModal =
+                        Ui.Modal.update action ui.editModal
+
+                    newUi =
+                        { ui | editModal = newEditModal }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
+
+            CloseDeleteModal ->
+                let
+                    newDeleteModal =
+                        Ui.Modal.close ui.deleteModal
+
+                    newActionMenu =
+                        Ui.DropdownMenu.close ui.actionMenu
+
+                    newUi =
+                        { ui | deleteModal = newDeleteModal, actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
+
+            OpenDeleteModal ->
+                let
+                    newDeleteModal =
+                        Ui.Modal.open ui.deleteModal
+
+                    newActionMenu =
+                        Ui.DropdownMenu.close ui.actionMenu
+
+                    newUi =
+                        { ui | deleteModal = newDeleteModal, actionMenu = newActionMenu }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
+
+            DeleteModal action ->
+                let
+                    newDeleteModal =
+                        Ui.Modal.update action ui.deleteModal
+
+                    newUi =
+                        { ui | deleteModal = newDeleteModal }
+                in
+                    ( { headerInfo | ui = newUi }, Cmd.none )
 
 
 subscriptions : HeaderInfo -> Sub Msg
 subscriptions headerInfo =
     Sub.batch
-        [ Sub.map DropdownMenu (Ui.DropdownMenu.subscriptions headerInfo.dropdownMenu)
+        [ Sub.map ActionMenu (Ui.DropdownMenu.subscriptions headerInfo.ui.actionMenu)
         ]

@@ -105,7 +105,10 @@ update message container =
                 ( updatedHeaderInfo, cmdHeader ) =
                     Header.Update.update subMsg container.headerInfo
 
-                nodeId =
+                headerId =
+                    Header.Models.headerId container.headerInfo
+
+                updatedHeaderId =
                     Header.Models.headerId updatedHeaderInfo
 
                 maybeTab =
@@ -124,7 +127,10 @@ update message container =
                                 |> Maybe.withDefault (Tab EmptyTab "")
 
                 cmdContent =
-                    Content.Commands.fetchContent updatedTab.tabType nodeId
+                    if (headerId /= updatedHeaderId) then
+                        Content.Commands.fetchContent updatedTab.tabType updatedHeaderId
+                    else
+                        Cmd.none
 
                 cmdBatch =
                     Cmd.batch

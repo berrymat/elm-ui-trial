@@ -22,3 +22,12 @@ fetcher url decoder msg =
         |> withExpect (Http.expectJson decoder)
         |> withCredentials
         |> send msg
+
+
+fullAddress : Maybe String -> Maybe String -> Maybe String -> Maybe String -> Maybe String -> Maybe String
+fullAddress maybeAddress1 maybeAddress2 maybeAddress3 maybeAddress4 maybePostcode =
+    [ maybeAddress1, maybeAddress2, maybeAddress3, maybeAddress4, maybePostcode ]
+        |> List.map (\mb -> Maybe.withDefault "" mb)
+        |> List.filter (\a -> String.length (a) > 0)
+        |> String.join ", "
+        |> Just

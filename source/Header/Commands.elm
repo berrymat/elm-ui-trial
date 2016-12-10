@@ -92,14 +92,49 @@ staffUrl nodeId =
 
 rootDecoder : Decode.Decoder HeaderInfo
 rootDecoder =
-    Decode.map2 headerInfo
+    Decode.map3 headerInfo
         (Decode.map RootHeader
-            (Decode.map2 Root
-                (field "id" Decode.string)
-                (field "name" Decode.string)
+            (decode Root
+                |> required "id" Decode.string
+                |> required "access" rootAccessDecoder
+                |> required "values" rootValuesDecoder
             )
         )
         (field "tabs" (Decode.list tabDecoder))
+        (field "useraccess" useraccessDecoder)
+
+
+rootAccessDecoder : Decode.Decoder RootAccess
+rootAccessDecoder =
+    decode createRootAccess
+        |> required "name" Decode.string
+        |> required "image" Decode.string
+        |> required "address" Decode.string
+        |> required "contact" Decode.string
+
+
+createRootAccess : String -> String -> String -> String -> RootAccess
+createRootAccess name image address contact =
+    RootAccess
+        (convertAccessType name)
+        (convertAccessType image)
+        (convertAccessType address)
+        (convertAccessType contact)
+
+
+rootValuesDecoder : Decode.Decoder RootValues
+rootValuesDecoder =
+    decode RootValues
+        |> required "name" (Decode.nullable Decode.string)
+        |> required "image" (Decode.nullable Decode.string)
+        |> required "address1" (Decode.nullable Decode.string)
+        |> required "address2" (Decode.nullable Decode.string)
+        |> required "address3" (Decode.nullable Decode.string)
+        |> required "address4" (Decode.nullable Decode.string)
+        |> required "postcode" (Decode.nullable Decode.string)
+        |> required "contact" (Decode.nullable Decode.string)
+        |> required "tel" (Decode.nullable Decode.string)
+        |> required "email" (Decode.nullable Decode.string)
 
 
 
@@ -108,15 +143,16 @@ rootDecoder =
 
 customerDecoder : Decode.Decoder HeaderInfo
 customerDecoder =
-    Decode.map2 headerInfo
+    Decode.map3 headerInfo
         (Decode.map CustomerHeader
-            (decode Customer
+            (decode customer
                 |> required "id" Decode.string
                 |> required "access" customerAccessDecoder
                 |> required "values" customerValuesDecoder
             )
         )
         (field "tabs" (Decode.list tabDecoder))
+        (field "useraccess" useraccessDecoder)
 
 
 customerAccessDecoder : Decode.Decoder CustomerAccess
@@ -158,7 +194,7 @@ customerValuesDecoder =
 
 clientDecoder : Decode.Decoder HeaderInfo
 clientDecoder =
-    Decode.map2 headerInfo
+    Decode.map3 headerInfo
         (Decode.map ClientHeader
             (decode Client
                 |> required "id" Decode.string
@@ -167,6 +203,7 @@ clientDecoder =
             )
         )
         (field "tabs" (Decode.list tabDecoder))
+        (field "useraccess" useraccessDecoder)
 
 
 clientAccessDecoder : Decode.Decoder ClientAccess
@@ -209,7 +246,7 @@ clientValuesDecoder =
 
 siteDecoder : Decode.Decoder HeaderInfo
 siteDecoder =
-    Decode.map2 headerInfo
+    Decode.map3 headerInfo
         (Decode.map SiteHeader
             (decode Site
                 |> required "id" Decode.string
@@ -218,6 +255,7 @@ siteDecoder =
             )
         )
         (field "tabs" (Decode.list tabDecoder))
+        (field "useraccess" useraccessDecoder)
 
 
 siteAccessDecoder : Decode.Decoder SiteAccess
@@ -265,7 +303,7 @@ siteValuesDecoder =
 
 staffDecoder : Decode.Decoder HeaderInfo
 staffDecoder =
-    Decode.map2 headerInfo
+    Decode.map3 headerInfo
         (Decode.map StaffHeader
             (decode Staff
                 |> required "id" Decode.string
@@ -274,6 +312,7 @@ staffDecoder =
             )
         )
         (field "tabs" (Decode.list tabDecoder))
+        (field "useraccess" useraccessDecoder)
 
 
 staffAccessDecoder : Decode.Decoder StaffAccess
@@ -327,3 +366,11 @@ tabDecoder =
     Decode.map2 createTab
         (field "id" Decode.string)
         (field "name" Decode.string)
+
+
+useraccessDecoder : Decode.Decoder UserAccess
+useraccessDecoder =
+    Decode.map3 UserAccess
+        (field "admin" Decode.bool)
+        (field "owner" Decode.bool)
+        (field "root" Decode.bool)

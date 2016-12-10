@@ -13,9 +13,12 @@ type Msg
     | OnFetchClient NodeId (Result Http.Error HeaderInfo)
     | OnFetchSite NodeId (Result Http.Error HeaderInfo)
     | OnFetchStaff NodeId (Result Http.Error HeaderInfo)
-    | DropdownMenu Ui.DropdownMenu.Msg
-    | CloseMenu
-    | Nothing
-    | Modal Ui.Modal.Msg
-    | OpenModal
-    | CloseModal
+    | ActionMenu Ui.DropdownMenu.Msg
+    | CloseActionMenu
+    | NoAction
+    | EditModal Ui.Modal.Msg
+    | OpenEditModal
+    | CloseEditModal
+    | DeleteModal Ui.Modal.Msg
+    | OpenDeleteModal
+    | CloseDeleteModal
