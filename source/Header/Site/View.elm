@@ -63,7 +63,7 @@ headerActions : HeaderInfo -> Site -> List (Html Msg)
 headerActions headerInfo site =
     let
         useraccess =
-            headerInfo.useraccess
+            headerInfo.data.useraccess
 
         editModalViewModel =
             { content = [ text "Edit Modal" ]

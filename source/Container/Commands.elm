@@ -3,7 +3,7 @@ module Container.Commands exposing (..)
 import Container.Messages exposing (..)
 import Container.Models exposing (..)
 import Tree.Models exposing (NodeId, NodeType, Node, ChildrenState(..))
-import Header.Models exposing (Header(..))
+import Header.Models exposing (isHeaderEmpty)
 import Tree.Commands
 import Header.Commands
 import Helpers.Helpers exposing (apiUrl)
@@ -56,7 +56,7 @@ fetchInitialData nodeType nodeId container =
                 Cmd.none
 
         headerCmd =
-            if container.headerInfo.header == Empty then
+            if (isHeaderEmpty container.headerInfo) then
                 Cmd.map HeaderMsg (Header.Commands.fetchHeader nodeType nodeId)
             else
                 Cmd.none

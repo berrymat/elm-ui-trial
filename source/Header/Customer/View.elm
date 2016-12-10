@@ -68,7 +68,7 @@ headerActions : HeaderInfo -> Customer -> List (Html Msg)
 headerActions headerInfo customer =
     let
         useraccess =
-            headerInfo.useraccess
+            headerInfo.data.useraccess
 
         editModalViewModel =
             { content = (editModalContent customer)

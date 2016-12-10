@@ -15,6 +15,13 @@ type Header
     | Empty
 
 
+type alias HeaderData =
+    { header : Header
+    , tabs : List Tab
+    , useraccess : UserAccess
+    }
+
+
 type alias HeaderUi =
     { actionMenu : Ui.DropdownMenu.Model
     , editModal : Ui.Modal.Model
@@ -23,29 +30,23 @@ type alias HeaderUi =
 
 
 type alias HeaderInfo =
-    { header : Header
-    , tabs : List Tab
-    , useraccess : UserAccess
+    { data : HeaderData
     , ui : HeaderUi
     }
 
 
 initialHeaderInfo : HeaderInfo
 initialHeaderInfo =
-    headerInfo Empty [] (UserAccess False False False)
+    HeaderInfo initialHeaderData initialHeaderUi
 
 
-headerInfo : Header -> List Tab -> UserAccess -> HeaderInfo
-headerInfo header tabs useraccess =
-    { header = header
-    , tabs = tabs
-    , useraccess = useraccess
-    , ui = headerUi
-    }
+initialHeaderData : HeaderData
+initialHeaderData =
+    HeaderData Empty [] (UserAccess False False False)
 
 
-headerUi : HeaderUi
-headerUi =
+initialHeaderUi : HeaderUi
+initialHeaderUi =
     { actionMenu = Ui.DropdownMenu.init
     , editModal = Ui.Modal.init
     , deleteModal = Ui.Modal.init
@@ -267,7 +268,7 @@ type alias UserAccess =
 
 headerId : HeaderInfo -> NodeId
 headerId headerInfo =
-    case headerInfo.header of
+    case headerInfo.data.header of
         RootHeader root ->
             root.id
 
@@ -285,3 +286,29 @@ headerId headerInfo =
 
         Empty ->
             ""
+
+
+isHeaderEmpty : HeaderInfo -> Bool
+isHeaderEmpty headerInfo =
+    (headerInfo.data.header == Empty)
+
+
+getTabFromType : HeaderInfo -> TabType -> Tab
+getTabFromType headerInfo tabType =
+    let
+        maybeTab =
+            headerInfo.data.tabs
+                |> List.filter (\t -> t.tabType == tabType)
+                |> List.head
+
+        updatedTab =
+            case maybeTab of
+                Just tab ->
+                    tab
+
+                Nothing ->
+                    headerInfo.data.tabs
+                        |> List.head
+                        |> Maybe.withDefault (Tab EmptyTab "")
+    in
+        updatedTab

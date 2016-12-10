@@ -29,7 +29,7 @@ view headerInfo =
 
 header : HeaderInfo -> List (Html Msg)
 header headerInfo =
-    case headerInfo.header of
+    case headerInfo.data.header of
         RootHeader root ->
             headerRoot headerInfo root
 

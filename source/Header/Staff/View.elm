@@ -60,7 +60,7 @@ headerActions : HeaderInfo -> Staff -> List (Html Msg)
 headerActions headerInfo staff =
     let
         useraccess =
-            headerInfo.useraccess
+            headerInfo.data.useraccess
 
         editModalViewModel =
             { content = [ text "Edit Modal" ]

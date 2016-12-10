@@ -73,20 +73,8 @@ update message container =
                 nodeId =
                     Header.Models.headerId container.headerInfo
 
-                maybeTab =
-                    container.headerInfo.tabs
-                        |> List.filter (\t -> t.tabType == tabType)
-                        |> List.head
-
                 updatedTab =
-                    case maybeTab of
-                        Just tab ->
-                            tab
-
-                        Nothing ->
-                            container.headerInfo.tabs
-                                |> List.head
-                                |> Maybe.withDefault (Tab EmptyTab "")
+                    getTabFromType container.headerInfo tabType
 
                 cmdContent =
                     Content.Commands.fetchContent tabType nodeId
@@ -111,20 +99,8 @@ update message container =
                 updatedHeaderId =
                     Header.Models.headerId updatedHeaderInfo
 
-                maybeTab =
-                    updatedHeaderInfo.tabs
-                        |> List.filter (\t -> t.tabType == container.tab.tabType)
-                        |> List.head
-
                 updatedTab =
-                    case maybeTab of
-                        Just tab ->
-                            tab
-
-                        Nothing ->
-                            updatedHeaderInfo.tabs
-                                |> List.head
-                                |> Maybe.withDefault (Tab EmptyTab "")
+                    getTabFromType updatedHeaderInfo container.tab.tabType
 
                 cmdContent =
                     if (headerId /= updatedHeaderId) then

@@ -13,32 +13,32 @@ update message headerInfo =
             headerInfo.ui
     in
         case message of
-            OnFetchRoot headerId (Ok newHeaderInfo) ->
-                ( newHeaderInfo, Cmd.none )
+            OnFetchRoot headerId (Ok newHeaderData) ->
+                ( { headerInfo | data = newHeaderData }, Cmd.none )
 
             OnFetchRoot headerId (Err error) ->
                 ( headerInfo, Cmd.none )
 
-            OnFetchCustomer headerId (Ok newHeaderInfo) ->
-                ( newHeaderInfo, Cmd.none )
+            OnFetchCustomer headerId (Ok newHeaderData) ->
+                ( { headerInfo | data = newHeaderData }, Cmd.none )
 
             OnFetchCustomer headerId (Err error) ->
                 ( headerInfo, Cmd.none )
 
-            OnFetchClient headerId (Ok newHeaderInfo) ->
-                ( newHeaderInfo, Cmd.none )
+            OnFetchClient headerId (Ok newHeaderData) ->
+                ( { headerInfo | data = newHeaderData }, Cmd.none )
 
             OnFetchClient headerId (Err error) ->
                 ( headerInfo, Cmd.none )
 
-            OnFetchSite headerId (Ok newHeaderInfo) ->
-                ( newHeaderInfo, Cmd.none )
+            OnFetchSite headerId (Ok newHeaderData) ->
+                ( { headerInfo | data = newHeaderData }, Cmd.none )
 
             OnFetchSite headerId (Err error) ->
                 ( headerInfo, Cmd.none )
 
-            OnFetchStaff headerId (Ok newHeaderInfo) ->
-                ( newHeaderInfo, Cmd.none )
+            OnFetchStaff headerId (Ok newHeaderData) ->
+                ( { headerInfo | data = newHeaderData }, Cmd.none )
 
             OnFetchStaff headerId (Err error) ->
                 ( headerInfo, Cmd.none )

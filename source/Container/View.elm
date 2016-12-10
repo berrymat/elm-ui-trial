@@ -85,7 +85,7 @@ viewPath container =
 viewTabs : Container -> Html Msg
 viewTabs container =
     div [ class "tabs" ]
-        (List.map (tabItem container.tab) container.headerInfo.tabs)
+        (List.map (tabItem container.tab) container.headerInfo.data.tabs)
 
 
 tabItem : Tab -> Tab -> Html Msg

@@ -90,9 +90,9 @@ staffUrl nodeId =
 -- DECODERS
 
 
-rootDecoder : Decode.Decoder HeaderInfo
+rootDecoder : Decode.Decoder HeaderData
 rootDecoder =
-    Decode.map3 headerInfo
+    Decode.map3 HeaderData
         (Decode.map RootHeader
             (decode Root
                 |> required "id" Decode.string
@@ -141,9 +141,9 @@ rootValuesDecoder =
 -- Customer
 
 
-customerDecoder : Decode.Decoder HeaderInfo
+customerDecoder : Decode.Decoder HeaderData
 customerDecoder =
-    Decode.map3 headerInfo
+    Decode.map3 HeaderData
         (Decode.map CustomerHeader
             (decode customer
                 |> required "id" Decode.string
@@ -192,9 +192,9 @@ customerValuesDecoder =
 -- Client
 
 
-clientDecoder : Decode.Decoder HeaderInfo
+clientDecoder : Decode.Decoder HeaderData
 clientDecoder =
-    Decode.map3 headerInfo
+    Decode.map3 HeaderData
         (Decode.map ClientHeader
             (decode Client
                 |> required "id" Decode.string
@@ -244,9 +244,9 @@ clientValuesDecoder =
 -- Site
 
 
-siteDecoder : Decode.Decoder HeaderInfo
+siteDecoder : Decode.Decoder HeaderData
 siteDecoder =
-    Decode.map3 headerInfo
+    Decode.map3 HeaderData
         (Decode.map SiteHeader
             (decode Site
                 |> required "id" Decode.string
@@ -301,9 +301,9 @@ siteValuesDecoder =
 -- Staff
 
 
-staffDecoder : Decode.Decoder HeaderInfo
+staffDecoder : Decode.Decoder HeaderData
 staffDecoder =
-    Decode.map3 headerInfo
+    Decode.map3 HeaderData
         (Decode.map StaffHeader
             (decode Staff
                 |> required "id" Decode.string

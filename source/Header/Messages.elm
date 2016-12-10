@@ -8,11 +8,11 @@ import Ui.Modal
 
 
 type Msg
-    = OnFetchRoot NodeId (Result Http.Error HeaderInfo)
-    | OnFetchCustomer NodeId (Result Http.Error HeaderInfo)
-    | OnFetchClient NodeId (Result Http.Error HeaderInfo)
-    | OnFetchSite NodeId (Result Http.Error HeaderInfo)
-    | OnFetchStaff NodeId (Result Http.Error HeaderInfo)
+    = OnFetchRoot NodeId (Result Http.Error HeaderData)
+    | OnFetchCustomer NodeId (Result Http.Error HeaderData)
+    | OnFetchClient NodeId (Result Http.Error HeaderData)
+    | OnFetchSite NodeId (Result Http.Error HeaderData)
+    | OnFetchStaff NodeId (Result Http.Error HeaderData)
     | ActionMenu Ui.DropdownMenu.Msg
     | CloseActionMenu
     | NoAction
