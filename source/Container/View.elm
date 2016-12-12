@@ -5,10 +5,13 @@ import Html.Attributes exposing (class, style, attribute, href, id, classList, s
 import Html.Events exposing (onClick)
 import Container.Messages exposing (..)
 import Container.Models exposing (..)
-import Header.Models exposing (..)
+import Helpers.Models exposing (..)
+import Tree.Models exposing (..)
 import Tree.View
 import Header.View
 import Content.View
+import Customer.Header
+import RemoteData exposing (..)
 
 
 view : Container -> Html Msg
@@ -20,9 +23,7 @@ view container =
                 (Tree.View.view container.tree)
             ]
         , div [ class "body" ]
-            [ Html.map
-                HeaderMsg
-                (Header.View.view container.headerInfo)
+            [ viewHeader container
             , div [ class "body-path" ]
                 [ viewPath container
                 , viewTabs container
@@ -32,6 +33,33 @@ view container =
                 (Content.View.view container.content)
             ]
         ]
+
+
+viewHeader : Container -> Html Msg
+viewHeader container =
+    case container.headerType of
+        RootType ->
+            div [ class "body-header" ]
+                [ text "Root" ]
+
+        CustomerType ->
+            (Html.map CustomerMsg (Customer.Header.view container.customerHeader))
+
+        ClientType ->
+            div [ class "body-header" ]
+                [ text "Client" ]
+
+        SiteType ->
+            div [ class "body-header" ]
+                [ text "Site" ]
+
+        StaffType ->
+            div [ class "body-header" ]
+                [ text "Staff" ]
+
+        FolderType ->
+            div [ class "body-header" ]
+                [ text "Folder" ]
 
 
 clickablePathItem : PathItem -> Html Msg
@@ -85,7 +113,19 @@ viewPath container =
 viewTabs : Container -> Html Msg
 viewTabs container =
     div [ class "tabs" ]
-        (List.map (tabItem container.tab) container.headerInfo.data.tabs)
+        (case container.tabs of
+            NotAsked ->
+                [ text "Initializing." ]
+
+            Loading ->
+                [ text "Loading." ]
+
+            Failure err ->
+                [ text ("Error: " ++ toString err) ]
+
+            Success tabs ->
+                (List.map (tabItem container.tab) tabs)
+        )
 
 
 tabItem : Tab -> Tab -> Html Msg

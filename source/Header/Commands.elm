@@ -8,6 +8,7 @@ import Header.Models exposing (..)
 import Tree.Models exposing (NodeType(..), NodeId)
 import Ui.DropdownMenu
 import Helpers.Helpers exposing (apiUrl, fetcher)
+import Helpers.Models exposing (..)
 import HttpBuilder exposing (..)
 
 
