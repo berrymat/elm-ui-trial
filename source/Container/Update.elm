@@ -8,6 +8,7 @@ import Tree.Messages
 import Tree.Models exposing (..)
 import Tree.Update
 import Header.Models exposing (..)
+import Helpers.Models exposing (..)
 import Header.Commands
 import Header.Update
 import Content.Commands
@@ -15,6 +16,7 @@ import Content.Update
 import Navigation
 import Customer.Header
 import RemoteData exposing (..)
+import Customer.Models exposing (CustomerData)
 
 
 updatePathFromTree : Container -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Container, Cmd Msg )
@@ -108,24 +110,76 @@ update message container =
         CustomerResponse nodeId response ->
             let
                 customerResponse =
-                    RemoteData.map
-                        (\r ->
-                            { id = r.id
-                            , access = r.access
-                            , values = r.values
-                            , useraccess = r.useraccess
-                            }
-                        )
-                        response
+                    RemoteData.map convertCustomer response
 
                 newTabs =
                     RemoteData.map (\r -> r.tabs) response
 
                 ( newCustomerHeader, customerHeaderCmd ) =
                     Customer.Header.update (Customer.Header.CustomerResponse customerResponse) container.customerHeader
+
+                ( contentCmd, newTabType ) =
+                    case newTabs of
+                        NotAsked ->
+                            ( Cmd.none, container.tabType )
+
+                        Loading ->
+                            ( Cmd.none, container.tabType )
+
+                        Failure err ->
+                            ( Cmd.none, container.tabType )
+
+                        Success tabs ->
+                            let
+                                maybeTab =
+                                    List.filter (\t -> t.tabType == container.tabType) tabs
+                                        |> List.head
+                                        |> Debug.log "maybeTab"
+
+                                defaultTabType =
+                                    List.head tabs
+                                        |> Maybe.map (\t -> t.tabType)
+                                        |> Maybe.withDefault EmptyTab
+                                        |> Debug.log "defaultTabType"
+
+                                tabType =
+                                    Maybe.map (\t -> t.tabType) maybeTab
+                                        |> Maybe.withDefault defaultTabType
+                                        |> Debug.log "tabType"
+
+                                {-
+                                   tabType =
+                                       case maybeTab of
+                                           Just tab ->
+                                               tab.tabType
+
+                                           Nothing ->
+                                               let
+                                                   maybeFirstTab =
+                                                       List.head tabs
+                                               in
+                                                   case maybeFirstTab of
+                                                       Just tab ->
+                                                           tab.tabType
+
+                                                       Nothing ->
+                                                           EmptyTab
+                                -}
+                            in
+                                ( (Content.Commands.fetchContent tabType container.headerId)
+                                , tabType
+                                )
             in
-                ( { container | customer = response, customerHeader = newCustomerHeader, tabs = newTabs }
-                , (Cmd.map CustomerMsg customerHeaderCmd)
+                ( { container
+                    | customer = response
+                    , customerHeader = newCustomerHeader
+                    , tabs = newTabs
+                    , tabType = newTabType
+                  }
+                , Cmd.batch
+                    [ (Cmd.map CustomerMsg customerHeaderCmd)
+                    , (Cmd.map ContentMsg contentCmd)
+                    ]
                 )
 
         ClientResponse nodeId response ->
@@ -152,16 +206,10 @@ update message container =
 
         SelectTab tabType ->
             let
-                nodeId =
-                    Header.Models.headerId container.headerInfo
-
-                updatedTab =
-                    getTabFromType container.headerInfo tabType
-
                 cmdContent =
-                    Content.Commands.fetchContent tabType nodeId
+                    Content.Commands.fetchContent tabType container.headerId
             in
-                ( { container | tab = updatedTab }, Cmd.map ContentMsg cmdContent )
+                ( { container | tabType = tabType }, Cmd.map ContentMsg cmdContent )
 
         TreeMsg subMsg ->
             let
@@ -169,34 +217,6 @@ update message container =
                     Tree.Update.update subMsg container.tree
             in
                 updatePathFromTree container updatedTree cmdTree path
-
-        HeaderMsg subMsg ->
-            let
-                ( updatedHeaderInfo, cmdHeader ) =
-                    Header.Update.update subMsg container.headerInfo
-
-                headerId =
-                    Header.Models.headerId container.headerInfo
-
-                updatedHeaderId =
-                    Header.Models.headerId updatedHeaderInfo
-
-                updatedTab =
-                    getTabFromType updatedHeaderInfo container.tab.tabType
-
-                cmdContent =
-                    if (headerId /= updatedHeaderId) then
-                        Content.Commands.fetchContent updatedTab.tabType updatedHeaderId
-                    else
-                        Cmd.none
-
-                cmdBatch =
-                    Cmd.batch
-                        [ Cmd.map HeaderMsg cmdHeader
-                        , Cmd.map ContentMsg cmdContent
-                        ]
-            in
-                ( { container | headerInfo = updatedHeaderInfo, tab = updatedTab }, cmdBatch )
 
         ContentMsg subMsg ->
             let
@@ -215,6 +235,17 @@ update message container =
 
 subscriptions : Container -> Sub Msg
 subscriptions container =
-    Sub.batch
-        [ Sub.map HeaderMsg (Header.Update.subscriptions container.headerInfo)
-        ]
+    Sub.none
+
+
+convertCustomer : ContainerCustomer -> CustomerData
+convertCustomer container =
+    CustomerData container.id container.access container.values container.useraccess
+
+
+
+{-
+   Sub.batch
+       [ Sub.map HeaderMsg (Header.Update.subscriptions container.headerInfo)
+       ]
+-}

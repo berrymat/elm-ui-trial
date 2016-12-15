@@ -24,6 +24,5 @@ type Msg
     | SelectPath NodeId
     | SelectTab TabType
     | TreeMsg Tree.Messages.Msg
-    | HeaderMsg Header.Messages.Msg
     | ContentMsg Content.Messages.Msg
     | CustomerMsg Customer.Header.Msg

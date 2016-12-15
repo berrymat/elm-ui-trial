@@ -258,22 +258,3 @@ isHeaderEmpty headerInfo =
     (headerInfo.data.header == Empty)
 
 
-getTabFromType : HeaderInfo -> TabType -> Tab
-getTabFromType headerInfo tabType =
-    let
-        maybeTab =
-            headerInfo.data.tabs
-                |> List.filter (\t -> t.tabType == tabType)
-                |> List.head
-
-        updatedTab =
-            case maybeTab of
-                Just tab ->
-                    tab
-
-                Nothing ->
-                    headerInfo.data.tabs
-                        |> List.head
-                        |> Maybe.withDefault (Tab EmptyTab "")
-    in
-        updatedTab

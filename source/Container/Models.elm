@@ -20,8 +20,7 @@ type alias Container =
     , path : List Node
     , headerType : NodeType
     , headerId : NodeId
-    , headerInfo : HeaderInfo
-    , tab : Tab
+    , tabType : TabType
     , content : Content
     }
 
@@ -39,8 +38,7 @@ initialContainer =
     , path = []
     , headerType = RootType
     , headerId = ""
-    , headerInfo = initialHeaderInfo
-    , tab = Tab EmptyTab ""
+    , tabType = FoldersType
     , content = initialContent
     }
 
