@@ -5,7 +5,6 @@ import Json.Decode as Decode exposing (field, at)
 import Content.Messages exposing (..)
 import Content.Models exposing (..)
 import Header.Models exposing (..)
-import Helpers.Models exposing (..)
 import Tree.Models exposing (..)
 import Table
 import Debug

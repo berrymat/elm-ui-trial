@@ -1,6 +1,5 @@
 module Header.Models exposing (..)
 
-import Helpers.Models exposing (..)
 import Tree.Models exposing (NodeId)
 import Ui.DropdownMenu
 import Ui.Modal
@@ -52,6 +51,22 @@ initialHeaderUi =
     , editModal = Ui.Modal.init
     , deleteModal = Ui.Modal.init
     }
+
+
+type AccessType
+    = None
+    | Read
+    | Write
+
+
+convertAccessType : String -> AccessType
+convertAccessType type_ =
+    if type_ == "r" then
+        Read
+    else if type_ == "w" then
+        Write
+    else
+        None
 
 
 type alias Root =
@@ -228,6 +243,26 @@ type alias StaffAccess =
     , image : AccessType
     , address : AccessType
     , contact : AccessType
+    }
+
+
+type TabType
+    = FoldersType
+    | UsersType
+    | CasesType
+    | EmptyTab
+
+
+type alias Tab =
+    { tabType : TabType
+    , name : String
+    }
+
+
+type alias UserAccess =
+    { admin : Bool
+    , owner : Bool
+    , root : Bool
     }
 
 

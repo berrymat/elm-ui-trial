@@ -3,7 +3,6 @@ module Container.Update exposing (..)
 import Container.Messages exposing (Msg(..))
 import Container.Models exposing (..)
 import Container.Commands exposing (..)
-import Tree.Commands
 import Tree.Messages
 import Tree.Models exposing (..)
 import Tree.Update
@@ -13,8 +12,6 @@ import Header.Update
 import Content.Commands
 import Content.Update
 import Navigation
-import Customer.Header
-import RemoteData exposing (..)
 
 
 updatePathFromTree : Container -> Tree -> Cmd Tree.Messages.Msg -> List Node -> ( Container, Cmd Msg )
@@ -29,24 +26,22 @@ updatePathFromTree container updatedTree cmdTree path =
                     ( selected.id, selected.nodeType )
 
                 Nothing ->
-                    ( updatedTree.id, updatedTree.nodeType )
+                    ( container.tree.id, container.tree.nodeType )
 
-        treeContainer =
-            { container | tree = updatedTree, path = path }
-
-        ( headerContainer, cmd ) =
-            if (headerType /= container.headerType) || (headerId /= container.headerId) then
-                update (FetchHeader headerType headerId) treeContainer
+        cmdHeader =
+            if headerId /= (Header.Models.headerId container.headerInfo) then
+                Header.Commands.fetchHeader headerType headerId
+                    |> Cmd.map HeaderMsg
             else
-                ( treeContainer, Cmd.none )
+                Cmd.none
 
         cmdBatch =
             Cmd.batch
                 [ Cmd.map TreeMsg cmdTree
-                , cmd
+                , cmdHeader
                 ]
     in
-        ( headerContainer, cmdBatch )
+        ( { container | tree = updatedTree, path = path }, cmdBatch )
 
 
 update : Msg -> Container -> ( Container, Cmd Msg )
@@ -59,89 +54,12 @@ update message container =
 
         OnAuthenticate (Ok result) ->
             if result.result == "OK" then
-                update (FetchInitialData result.nodeType result.nodeId) container
+                ( container, fetchInitialData result.nodeType result.nodeId container )
             else
                 ( container, Cmd.none )
 
         OnAuthenticate (Err error) ->
             ( container, Cmd.none )
-
-        FetchInitialData nodeType nodeId ->
-            let
-                treeCmd =
-                    Cmd.map TreeMsg (Tree.Commands.fetchRoot nodeId)
-
-                ( newContainer, cmd ) =
-                    update (FetchHeader nodeType nodeId) container
-            in
-                ( newContainer, Cmd.batch [ treeCmd, cmd ] )
-
-        FetchHeader nodeType nodeId ->
-            let
-                newContainer =
-                    { container | headerType = nodeType, headerId = nodeId }
-            in
-                case nodeType of
-                    RootType ->
-                        ( { newContainer | root = Loading }, fetchRoot nodeId )
-
-                    CustomerType ->
-                        ( { newContainer | customer = Loading }, fetchCustomer nodeId )
-
-                    ClientType ->
-                        ( { newContainer | client = Loading }, fetchClient nodeId )
-
-                    SiteType ->
-                        ( { newContainer | site = Loading }, fetchSite nodeId )
-
-                    StaffType ->
-                        ( { newContainer | staff = Loading }, fetchStaff nodeId )
-
-                    FolderType ->
-                        ( newContainer, Cmd.none )
-
-        RootResponse nodeId response ->
-            ( { container | root = response }
-            , Cmd.none
-            )
-
-        CustomerResponse nodeId response ->
-            let
-                customerResponse =
-                    RemoteData.map
-                        (\r ->
-                            { id = r.id
-                            , access = r.access
-                            , values = r.values
-                            , useraccess = r.useraccess
-                            }
-                        )
-                        response
-
-                newTabs =
-                    RemoteData.map (\r -> r.tabs) response
-
-                ( newCustomerHeader, customerHeaderCmd ) =
-                    Customer.Header.update (Customer.Header.CustomerResponse customerResponse) container.customerHeader
-            in
-                ( { container | customer = response, customerHeader = newCustomerHeader, tabs = newTabs }
-                , (Cmd.map CustomerMsg customerHeaderCmd)
-                )
-
-        ClientResponse nodeId response ->
-            ( { container | client = response }
-            , Cmd.none
-            )
-
-        SiteResponse nodeId response ->
-            ( { container | site = response }
-            , Cmd.none
-            )
-
-        StaffResponse nodeId response ->
-            ( { container | staff = response }
-            , Cmd.none
-            )
 
         SelectPath nodeId ->
             let
@@ -204,13 +122,6 @@ update message container =
                     Content.Update.update subMsg container.content
             in
                 ( { container | content = updatedContent }, Cmd.map ContentMsg cmdContent )
-
-        CustomerMsg subMsg ->
-            let
-                ( updatedCustomer, cmdCustomer ) =
-                    Customer.Header.update subMsg container.customerHeader
-            in
-                ( { container | customerHeader = updatedCustomer }, Cmd.map CustomerMsg cmdCustomer )
 
 
 subscriptions : Container -> Sub Msg

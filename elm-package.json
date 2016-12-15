@@ -16,7 +16,6 @@
         "evancz/elm-sortable-table": "1.0.1 <= v < 2.0.0",
         "evancz/url-parser": "2.0.1 <= v < 3.0.0",
         "gdotdesign/elm-ui": "0.4.0 <= v < 1.0.0",
-        "krisajenkins/remotedata": "4.0.1 <= v < 5.0.0",
         "lukewestby/elm-http-builder": "4.0.0 <= v < 5.0.0",
         "sporto/erl": "11.0.0 <= v < 12.0.0"
     },
