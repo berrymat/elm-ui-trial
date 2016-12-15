@@ -59,12 +59,9 @@ headerItems site =
         ]
 
 
-headerActions : HeaderInfo -> Site -> List (Html Msg)
-headerActions headerInfo site =
+headerActions : Site -> UserAccess -> HeaderUi -> List (Html Msg)
+headerActions site useraccess ui =
     let
-        useraccess =
-            headerInfo.data.useraccess
-
         editModalViewModel =
             { content = [ text "Edit Modal" ]
             , title = "Edit Details"
@@ -87,14 +84,14 @@ headerActions headerInfo site =
                 ]
             }
     in
-        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu headerInfo.ui.actionMenu
-        , Ui.Modal.view EditModal editModalViewModel headerInfo.ui.editModal
-        , Ui.Modal.view DeleteModal deleteModalViewModel headerInfo.ui.deleteModal
+        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu ui.actionMenu
+        , Ui.Modal.view EditModal editModalViewModel ui.editModal
+        , Ui.Modal.view DeleteModal deleteModalViewModel ui.deleteModal
         ]
 
 
-headerSite : HeaderInfo -> Site -> List (Html Msg)
-headerSite headerInfo site =
+headerSite : Site -> UserAccess -> HeaderUi -> List (Html Msg)
+headerSite site useraccess ui =
     let
         values =
             site.values
@@ -113,7 +110,7 @@ headerSite headerInfo site =
         headerContent =
             List.append
                 (headerItems site)
-                (headerActions headerInfo site)
+                (headerActions site useraccess ui)
     in
         [ div
             [ class "body-header-image"

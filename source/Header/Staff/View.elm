@@ -56,12 +56,9 @@ headerItems staff =
         ]
 
 
-headerActions : HeaderInfo -> Staff -> List (Html Msg)
-headerActions headerInfo staff =
+headerActions : Staff -> UserAccess -> HeaderUi -> List (Html Msg)
+headerActions staff useraccess ui =
     let
-        useraccess =
-            headerInfo.data.useraccess
-
         editModalViewModel =
             { content = [ text "Edit Modal" ]
             , title = "Edit Details"
@@ -84,14 +81,14 @@ headerActions headerInfo staff =
                 ]
             }
     in
-        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu headerInfo.ui.actionMenu
-        , Ui.Modal.view EditModal editModalViewModel headerInfo.ui.editModal
-        , Ui.Modal.view DeleteModal deleteModalViewModel headerInfo.ui.deleteModal
+        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu ui.actionMenu
+        , Ui.Modal.view EditModal editModalViewModel ui.editModal
+        , Ui.Modal.view DeleteModal deleteModalViewModel ui.deleteModal
         ]
 
 
-headerStaff : HeaderInfo -> Staff -> List (Html Msg)
-headerStaff headerInfo staff =
+headerStaff : Staff -> UserAccess -> HeaderUi -> List (Html Msg)
+headerStaff staff useraccess ui =
     let
         values =
             staff.values
@@ -110,7 +107,7 @@ headerStaff headerInfo staff =
         headerContent =
             List.append
                 (headerItems staff)
-                (headerActions headerInfo staff)
+                (headerActions staff useraccess ui)
     in
         [ div
             [ class "body-header-image"

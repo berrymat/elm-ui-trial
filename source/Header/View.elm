@@ -19,31 +19,44 @@ import Header.Customer.View exposing (headerCustomer)
 import Header.Client.View exposing (headerClient)
 import Header.Site.View exposing (headerSite)
 import Header.Staff.View exposing (headerStaff)
+import RemoteData exposing (..)
 
 
 view : HeaderInfo -> Html Msg
 view headerInfo =
     div [ class "body-header" ]
-        (header headerInfo)
+        (case headerInfo.data of
+            NotAsked ->
+                [ text "Initializing." ]
+
+            Loading ->
+                [ text "Loading." ]
+
+            Failure err ->
+                [ text ("Error: " ++ toString err) ]
+
+            Success data ->
+                (header data.header data.useraccess headerInfo.ui)
+        )
 
 
-header : HeaderInfo -> List (Html Msg)
-header headerInfo =
-    case headerInfo.data.header of
+header : Header -> UserAccess -> HeaderUi -> List (Html Msg)
+header header ua ui =
+    case header of
         RootHeader root ->
-            headerRoot headerInfo root
+            headerRoot root ua ui
 
         CustomerHeader customer ->
-            headerCustomer headerInfo customer
+            headerCustomer customer ua ui
 
         ClientHeader client ->
-            headerClient headerInfo client
+            headerClient client ua ui
 
         SiteHeader site ->
-            headerSite headerInfo site
+            headerSite site ua ui
 
         StaffHeader staff ->
-            headerStaff headerInfo staff
+            headerStaff staff ua ui
 
         Empty ->
             headerEmpty

@@ -9,6 +9,7 @@ import Header.Models exposing (..)
 import Tree.View
 import Header.View
 import Content.View
+import RemoteData exposing (..)
 
 
 view : Container -> Html Msg
@@ -84,8 +85,13 @@ viewPath container =
 
 viewTabs : Container -> Html Msg
 viewTabs container =
-    div [ class "tabs" ]
-        (List.map (tabItem container.tab) container.headerInfo.data.tabs)
+    let
+        tabs =
+            RemoteData.map (\d -> d.tabs) container.headerInfo.data
+                |> RemoteData.withDefault []
+    in
+        div [ class "tabs" ]
+            (List.map (tabItem container.tab) tabs)
 
 
 tabItem : Tab -> Tab -> Html Msg

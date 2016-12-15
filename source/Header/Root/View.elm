@@ -55,12 +55,9 @@ headerItems root =
         ]
 
 
-headerActions : HeaderInfo -> Root -> List (Html Msg)
-headerActions headerInfo root =
+headerActions : Root -> UserAccess -> HeaderUi -> List (Html Msg)
+headerActions root useraccess ui =
     let
-        useraccess =
-            headerInfo.data.useraccess
-
         editModalViewModel =
             { content = [ text "Edit Modal" ]
             , title = "Edit Details"
@@ -83,14 +80,14 @@ headerActions headerInfo root =
                 ]
             }
     in
-        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu headerInfo.ui.actionMenu
-        , Ui.Modal.view EditModal editModalViewModel headerInfo.ui.editModal
-        , Ui.Modal.view DeleteModal deleteModalViewModel headerInfo.ui.deleteModal
+        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu ui.actionMenu
+        , Ui.Modal.view EditModal editModalViewModel ui.editModal
+        , Ui.Modal.view DeleteModal deleteModalViewModel ui.deleteModal
         ]
 
 
-headerRoot : HeaderInfo -> Root -> List (Html Msg)
-headerRoot headerInfo root =
+headerRoot : Root -> UserAccess -> HeaderUi -> List (Html Msg)
+headerRoot root useraccess ui =
     let
         values =
             root.values
@@ -109,7 +106,7 @@ headerRoot headerInfo root =
         headerContent =
             List.append
                 (headerItems root)
-                (headerActions headerInfo root)
+                (headerActions root useraccess ui)
     in
         [ div
             [ class "body-header-image"

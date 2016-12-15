@@ -1,9 +1,11 @@
 module Header.Update exposing (..)
 
 import Header.Messages exposing (..)
+import Header.Commands exposing (..)
 import Header.Models exposing (..)
 import Ui.DropdownMenu
 import Ui.Modal
+import RemoteData exposing (..)
 
 
 update : Msg -> HeaderInfo -> ( HeaderInfo, Cmd Msg )
@@ -13,35 +15,15 @@ update message headerInfo =
             headerInfo.ui
     in
         case message of
-            OnFetchRoot headerId (Ok newHeaderData) ->
+            FetchHeader nodeType nodeId ->
+                let
+                    cmd =
+                        fetchHeader nodeType nodeId
+                in
+                    ( { headerInfo | data = Loading }, cmd )
+
+            HeaderResponse newHeaderData ->
                 ( { headerInfo | data = newHeaderData }, Cmd.none )
-
-            OnFetchRoot headerId (Err error) ->
-                ( headerInfo, Cmd.none )
-
-            OnFetchCustomer headerId (Ok newHeaderData) ->
-                ( { headerInfo | data = newHeaderData }, Cmd.none )
-
-            OnFetchCustomer headerId (Err error) ->
-                ( headerInfo, Cmd.none )
-
-            OnFetchClient headerId (Ok newHeaderData) ->
-                ( { headerInfo | data = newHeaderData }, Cmd.none )
-
-            OnFetchClient headerId (Err error) ->
-                ( headerInfo, Cmd.none )
-
-            OnFetchSite headerId (Ok newHeaderData) ->
-                ( { headerInfo | data = newHeaderData }, Cmd.none )
-
-            OnFetchSite headerId (Err error) ->
-                ( headerInfo, Cmd.none )
-
-            OnFetchStaff headerId (Ok newHeaderData) ->
-                ( { headerInfo | data = newHeaderData }, Cmd.none )
-
-            OnFetchStaff headerId (Err error) ->
-                ( headerInfo, Cmd.none )
 
             ActionMenu action ->
                 let

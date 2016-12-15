@@ -1,6 +1,7 @@
 module Header.Models exposing (..)
 
 import Tree.Models exposing (NodeId)
+import RemoteData exposing (..)
 import Ui.DropdownMenu
 import Ui.Modal
 import Ui.Input
@@ -30,19 +31,14 @@ type alias HeaderUi =
 
 
 type alias HeaderInfo =
-    { data : HeaderData
+    { data : WebData HeaderData
     , ui : HeaderUi
     }
 
 
 initialHeaderInfo : HeaderInfo
 initialHeaderInfo =
-    HeaderInfo initialHeaderData initialHeaderUi
-
-
-initialHeaderData : HeaderData
-initialHeaderData =
-    HeaderData Empty [] (UserAccess False False False)
+    HeaderInfo NotAsked initialHeaderUi
 
 
 initialHeaderUi : HeaderUi
@@ -266,9 +262,9 @@ type alias UserAccess =
     }
 
 
-headerId : HeaderInfo -> NodeId
-headerId headerInfo =
-    case headerInfo.data.header of
+extractId : HeaderData -> NodeId
+extractId data =
+    case data.header of
         RootHeader root ->
             root.id
 
@@ -288,16 +284,26 @@ headerId headerInfo =
             ""
 
 
+headerId : HeaderInfo -> NodeId
+headerId headerInfo =
+    RemoteData.map extractId headerInfo.data
+        |> RemoteData.withDefault ""
+
+
 isHeaderEmpty : HeaderInfo -> Bool
 isHeaderEmpty headerInfo =
-    (headerInfo.data.header == Empty)
+    (headerInfo.data == NotAsked)
 
 
 getTabFromType : HeaderInfo -> TabType -> Tab
 getTabFromType headerInfo tabType =
     let
+        tabs =
+            RemoteData.map (\data -> data.tabs) headerInfo.data
+                |> RemoteData.withDefault []
+
         maybeTab =
-            headerInfo.data.tabs
+            tabs
                 |> List.filter (\t -> t.tabType == tabType)
                 |> List.head
 
@@ -307,7 +313,7 @@ getTabFromType headerInfo tabType =
                     tab
 
                 Nothing ->
-                    headerInfo.data.tabs
+                    tabs
                         |> List.head
                         |> Maybe.withDefault (Tab EmptyTab "")
     in

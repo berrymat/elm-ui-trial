@@ -9,6 +9,7 @@ import Tree.Models exposing (NodeType(..), NodeId)
 import Ui.DropdownMenu
 import Helpers.Helpers exposing (apiUrl, fetcher)
 import HttpBuilder exposing (..)
+import RemoteData exposing (..)
 
 
 fetchHeader : NodeType -> NodeId -> Cmd Msg
@@ -38,27 +39,27 @@ fetchHeader nodeType nodeId =
 
 fetchRoot : NodeId -> Cmd Msg
 fetchRoot nodeId =
-    fetcher (rootUrl nodeId) rootDecoder (OnFetchRoot nodeId)
+    fetcher (rootUrl nodeId) rootDecoder (HeaderResponse << RemoteData.fromResult)
 
 
 fetchCustomer : NodeId -> Cmd Msg
 fetchCustomer nodeId =
-    fetcher (customerUrl nodeId) customerDecoder (OnFetchCustomer nodeId)
+    fetcher (customerUrl nodeId) customerDecoder (HeaderResponse << RemoteData.fromResult)
 
 
 fetchClient : NodeId -> Cmd Msg
 fetchClient nodeId =
-    fetcher (clientUrl nodeId) clientDecoder (OnFetchClient nodeId)
+    fetcher (clientUrl nodeId) clientDecoder (HeaderResponse << RemoteData.fromResult)
 
 
 fetchSite : NodeId -> Cmd Msg
 fetchSite nodeId =
-    fetcher (siteUrl nodeId) siteDecoder (OnFetchSite nodeId)
+    fetcher (siteUrl nodeId) siteDecoder (HeaderResponse << RemoteData.fromResult)
 
 
 fetchStaff : NodeId -> Cmd Msg
 fetchStaff nodeId =
-    fetcher (staffUrl nodeId) staffDecoder (OnFetchStaff nodeId)
+    fetcher (staffUrl nodeId) staffDecoder (HeaderResponse << RemoteData.fromResult)
 
 
 rootUrl : NodeId -> String

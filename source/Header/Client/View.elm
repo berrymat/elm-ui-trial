@@ -56,12 +56,9 @@ headerItems client =
         ]
 
 
-headerActions : HeaderInfo -> Client -> List (Html Msg)
-headerActions headerInfo client =
+headerActions : Client -> UserAccess -> HeaderUi -> List (Html Msg)
+headerActions client useraccess ui =
     let
-        useraccess =
-            headerInfo.data.useraccess
-
         editModalViewModel =
             { content = [ text "Edit Modal" ]
             , title = "Edit Details"
@@ -84,14 +81,14 @@ headerActions headerInfo client =
                 ]
             }
     in
-        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu headerInfo.ui.actionMenu
-        , Ui.Modal.view EditModal editModalViewModel headerInfo.ui.editModal
-        , Ui.Modal.view DeleteModal deleteModalViewModel headerInfo.ui.deleteModal
+        [ Ui.DropdownMenu.view actionDropdownViewModel ActionMenu ui.actionMenu
+        , Ui.Modal.view EditModal editModalViewModel ui.editModal
+        , Ui.Modal.view DeleteModal deleteModalViewModel ui.deleteModal
         ]
 
 
-headerClient : HeaderInfo -> Client -> List (Html Msg)
-headerClient headerInfo client =
+headerClient : Client -> UserAccess -> HeaderUi -> List (Html Msg)
+headerClient client useraccess ui =
     let
         values =
             client.values
@@ -110,7 +107,7 @@ headerClient headerInfo client =
         headerContent =
             List.append
                 (headerItems client)
-                (headerActions headerInfo client)
+                (headerActions client useraccess ui)
     in
         [ div
             [ class "body-header-image"
