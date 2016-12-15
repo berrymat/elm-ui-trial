@@ -124,17 +124,17 @@ viewTabs container =
                 [ text ("Error: " ++ toString err) ]
 
             Success tabs ->
-                (List.map (tabItem container.tabType) tabs)
+                (List.map (tabItem container.tab) tabs)
         )
 
 
-tabItem : TabType -> Tab -> Html Msg
-tabItem tabType tab =
+tabItem : Tab -> Tab -> Html Msg
+tabItem selected tab =
     div
         [ classList
             [ ( "tab", True )
-            , ( "active", tabType == tab.tabType )
-            , ( "clickable", tabType /= tab.tabType )
+            , ( "active", selected.tabType == tab.tabType )
+            , ( "clickable", selected.tabType /= tab.tabType )
             ]
         , onClick (SelectTab tab.tabType)
         ]
